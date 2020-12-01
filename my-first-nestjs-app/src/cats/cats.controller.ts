@@ -1,14 +1,17 @@
 
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseFilters } from '@nestjs/common';
 import { CreateCatDto, UpdateCatDto } from './dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
+import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
 
 @Controller('cats')
 export class CatsController {
   constructor(private catsService: CatsService) {}
 
   @Post()
+  @UseFilters(new HttpExceptionFilter()) // Pass instance of class
+  // @UseFilters(HttpExceptionFilter)  // Pass class directly, leaving responsibility for instantiation to the framework, and enabling dependency injection.
   async create(@Body() createCatDto: CreateCatDto): Promise<any> {
     this.catsService.create(createCatDto);
   }
